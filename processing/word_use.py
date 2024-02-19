@@ -83,7 +83,9 @@ print("Calculating vocabulary richness.")
 data = pd.DataFrame(load_works())
 
 print("Lemmatizing.")
-lemmatized_text = data["doc"].map(lambda d: " ".join(tok.lemma_ for tok in d))
+lemmatized_text = data["doc"].map(
+    lambda d: " ".join(tok.lemma_ for tok in d if not tok.is_stop)
+)
 
 print("Counting frequencies.")
 vectorizer = CountVectorizer()

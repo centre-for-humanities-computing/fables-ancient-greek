@@ -51,8 +51,11 @@ fig = px.scatter(
     },
     hover_name="fable_name",
     template="plotly_white",
-    height=1000,
-    width=1400,
+    height=1200,
+    width=1000,
+)
+fig.update_layout(
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5)
 )
 fig.update_traces(marker=dict(size=14, line=dict(width=2, color="black")))
 fig.write_html(out_path)
