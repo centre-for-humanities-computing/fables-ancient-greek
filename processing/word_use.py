@@ -1,7 +1,5 @@
 import glob
-from collections import Counter
 from pathlib import Path
-from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -10,7 +8,6 @@ import spacy
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.preprocessing import label_binarize
 from spacy.tokens import Doc
-from tqdm import tqdm
 from umap.umap_ import UMAP
 
 nlp = spacy.load("grc_odycy_joint_trf")
@@ -54,7 +51,7 @@ def get_highest(component, vocab, top_k=10) -> str:
 
 def top_ctf_idf(labels, doc_term_matrix, vocab, top_k=10) -> dict[str, str]:
     unique_labels = np.unique(labels)
-    binary_labels = label_binarize(labels, classes=unique_works)
+    binary_labels = label_binarize(labels, classes=unique_labels)
     ctf_idf = soft_ctf_idf(binary_labels, doc_term_matrix)  # type: ignore
     res = {}
     for label, component in zip(unique_labels, ctf_idf):
@@ -74,7 +71,7 @@ def top_freq_group(labels, doc_term_matrix, vocab, top_k=10) -> dict[str, str]:
 def top_words(doc_term_matrix, vocab, top_k=5) -> list[str]:
     res = []
     for bow in doc_term_matrix:
-        bow = np.squeeze(np.asarray(bow))
+        bow = np.squeeze(np.asarray(bow.todense()))
         res.append(get_highest(bow, vocab, top_k))
     return res
 
@@ -103,8 +100,8 @@ data["top_tf-idf"] = top_words(tf_idf, vocab)
 data["top_ctf-idf"] = data["work_id"].map(top_weighted_per_class)
 
 print("Calculating positions with UMAP.")
-data["x_umap"], data["y_umap"] = UMAP(n_components=2, metric="cosine").fit_transform(
-    tf_idf
+data["x_umap"], data["y_umap"] = (
+    UMAP(n_components=2, metric="cosine").fit_transform(tf_idf).T
 )
 
 print("Saving results")
