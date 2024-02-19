@@ -79,7 +79,7 @@ def top_words(doc_term_matrix, vocab, top_k=5) -> list[str]:
     return res
 
 
-out_path = Path("results/stylistic_features.csv")
+out_path = Path("results/word_use.csv")
 out_path.parent.mkdir(exist_ok=True)
 
 print("Calculating vocabulary richness.")
