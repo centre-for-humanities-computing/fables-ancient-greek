@@ -1,13 +1,13 @@
 import glob
 from collections import Counter
-from functools import partial
 from pathlib import Path
+from typing import Union
 
 import numpy as np
 import pandas as pd
-import plotly.express as px
 import spacy
 from spacy.tokens import Doc
+from tqdm import tqdm
 
 nlp = spacy.load("grc_odycy_joint_trf")
 
@@ -57,11 +57,44 @@ def ttr(tokens: list[str]) -> float:
     return len(set(tokens)) / len(tokens)
 
 
-entries = load_works()
-data = pd.DataFrame(entries)
-data["tokens"] = data["doc"].map(lambda d: [token.lemma_ for token in d])
-data["mattr_10"] = data["tokens"].map(partial(mattr, window_size=10))
-data["mattr_50"] = data["tokens"].map(partial(mattr, window_size=50))
-data["ttr"] = data["tokens"].map(ttr)
+def vocabulary_richness(doc: Doc) -> dict[str, float]:
+    lemmata = [token.lemma_ for token in doc]
+    return dict(
+        mattr_10=mattr(lemmata, 10), mattr_50=mattr(lemmata, 50), ttr=ttr(lemmata)
+    )
 
-px.scatter(data, y="ttr", x="mattr_10", color="work_id", hover_data=["fable_name"])
+
+def lengths(doc: Doc) -> dict[str, Union[int, float]]:
+    sentence_lengths = [len(sent) for sent in doc.sents]
+    token_lenghts = [len(token.orth_) for token in doc]
+    return dict(
+        length=len(doc),
+        mean_sentence_length=np.mean(sentence_lengths),  # type: ignore
+        mean_token_length=np.mean(token_lenghts),
+    )
+
+
+def pos_tag_frequencies(doc: Doc) -> dict[str, float]:
+    pos_tags = [token.pos_ for token in doc]
+    c = Counter(pos_tags)
+    total = len(pos_tags)
+    return {tag: count / total for tag, count in c.items()}
+
+
+out_path = Path("results/stylistic_features.csv")
+out_path.parent.mkdir(exist_ok=True)
+
+print("Calculating vocabulary richness.")
+data = pd.DataFrame(load_works())
+
+records = []
+for doc in tqdm(data["doc"], desc="Processing documents."):
+    record = {**vocabulary_richness(doc), **lengths(doc), **pos_tag_frequencies(doc)}
+    records.append(record)
+data = pd.concat([data, pd.DataFrame.from_records(records)], axis=1)
+
+print("Saving results")
+res = data.drop(columns=["doc"])
+res.to_csv(out_path)
+
+print("Done.")
