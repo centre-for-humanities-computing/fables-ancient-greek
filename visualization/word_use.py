@@ -26,7 +26,7 @@ data["fable"] = data["fable_name"].map(lambda s: s.split(" - ")[1])
 data["work"] = data["work_id"].map(lambda id: find_work(id, md))
 data["group"] = (
     data["work"]
-    + " <br> <b>top tf-idf</b>: <i>"
+    + " <br> <b>top c-tf-idf</b>: <i>"
     + data["top_ctf-idf"]
     + "</i> <br> <b>top freq: </b><i>"
     + data["top_frequency_in_work"]
