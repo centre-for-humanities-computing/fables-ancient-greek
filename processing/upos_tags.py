@@ -55,12 +55,6 @@ vectorizer = CountVectorizer()
 upos_vecs = np.asarray(vectorizer.fit_transform(upos_docs).todense())
 upos_vocab = vectorizer.get_feature_names_out()
 rel_freqs = (upos_vecs.T / upos_vecs.sum(axis=1)).T
-# rel_freqs = {}
-# for work_id in data["work_id"].unique():
-#     freq = upos_vecs[data["work_id"] == work_id].sum(axis=0)
-#     freq = np.squeeze(np.asarray(freq))
-#     rel_freq = freq / freq.sum()
-#     rel_freqs[work_id] = dict(zip(upos_vocab, rel_freq))
 
 print("Saving UPOS frequencies")
 rel_freq_df = pd.DataFrame(rel_freqs, columns=upos_vocab)
