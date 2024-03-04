@@ -49,3 +49,12 @@ for i_feature, feature in enumerate(["ttr", "mattr_10", "mattr_50"]):
 fig.update_layout(template="plotly_white", width=1200, height=1000)
 fig.update_yaxes(visible=False)
 fig.write_html(out_path)
+
+fig = px.scatter_matrix(
+    data,
+    dimensions=["length", "mean_sentence_length", "mean_token_length"],
+    hover_name="fable_name",
+    color="work",
+)
+out_path = Path("docs/_static/length_scatter_matrix.html")
+fig.write_html(out_path)
