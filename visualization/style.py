@@ -32,9 +32,12 @@ out_path.parent.mkdir(exist_ok=True, parents=True)
 fig = make_subplots(
     rows=3, cols=1, subplot_titles=["Overall TTR", "MATTR-10", "MATTR-50"]
 )
+unique_works = data["work_id"].unique()
+colors = px.colors.qualitative.Pastel
+work_to_color = dict(zip(unique_works, colors))
 for i_feature, feature in enumerate(["ttr", "mattr_10", "mattr_50"]):
     row = i_feature + 1
-    for work in pd.unique(data["work"]):
+    for work, color in work_to_color.items():
         subset = data[data["work"] == work]
         trace = go.Box(
             x=subset[feature],
