@@ -74,13 +74,6 @@ def lengths(doc: Doc) -> dict[str, Union[int, float]]:
     )
 
 
-def pos_tag_frequencies(doc: Doc) -> dict[str, float]:
-    pos_tags = [token.pos_ for token in doc]
-    c = Counter(pos_tags)
-    total = len(pos_tags)
-    return {tag: count / total for tag, count in c.items()}
-
-
 out_path = Path("results/stylistic_features.csv")
 out_path.parent.mkdir(exist_ok=True)
 
@@ -89,7 +82,7 @@ data = pd.DataFrame(load_works())
 
 records = []
 for doc in tqdm(data["doc"], desc="Processing documents."):
-    record = {**vocabulary_richness(doc), **lengths(doc), **pos_tag_frequencies(doc)}
+    record = {**vocabulary_richness(doc), **lengths(doc)}
     records.append(record)
 data = pd.concat([data, pd.DataFrame.from_records(records)], axis=1)
 
