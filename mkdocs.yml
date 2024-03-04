@@ -3,6 +3,7 @@ nav:
   - Analyses: 
     - Home: index.md
     - Word Use and Phrases: word_use.md
+    - Stylistic Features: style.md
 
 
 theme:
