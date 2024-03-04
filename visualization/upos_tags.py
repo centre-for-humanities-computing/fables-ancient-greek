@@ -1,4 +1,5 @@
 from ast import literal_eval
+from functools import partial
 from pathlib import Path
 
 import pandas as pd
@@ -58,8 +59,9 @@ fig.write_html(out_path)
 
 print("Producing UPOS frequency visualizations.")
 data = pd.read_csv("results/upos_tags.csv", index_col=0)
+data["work_name"] = data["work_id"].map(partial(find_work, md=md))
 fig = px.scatter_matrix(
-    data, dimensions=["noun", "adj", "verb"], hover_name="fable_name", color="work_id"
+    data, dimensions=["noun", "adj", "verb"], hover_name="fable_name", color="work_name"
 )
 out_path = Path("docs/_static/upos_scatter_matrix.html")
 fig.write_html(out_path)
