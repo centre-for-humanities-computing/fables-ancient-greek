@@ -32,7 +32,7 @@ out_path.parent.mkdir(exist_ok=True, parents=True)
 fig = make_subplots(
     rows=3, cols=1, subplot_titles=["Overall TTR", "MATTR-10", "MATTR-50"]
 )
-unique_works = data["work_id"].unique()
+unique_works = data["work"].unique()
 colors = px.colors.qualitative.Pastel
 work_to_color = dict(zip(unique_works, colors))
 for i_feature, feature in enumerate(["ttr", "mattr_10", "mattr_50"]):
@@ -47,6 +47,7 @@ for i_feature, feature in enumerate(["ttr", "mattr_10", "mattr_50"]):
             boxpoints="all",
             text=subset["fable"],
             hovertemplate="<b>%{text}",
+            marker=dict(color=color),
         )
         fig.add_trace(trace, row=row, col=1)
 fig.update_layout(template="plotly_white", width=1200, height=1000)
