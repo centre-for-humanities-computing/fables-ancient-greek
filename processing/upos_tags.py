@@ -48,7 +48,9 @@ print("Loading data.")
 data = pd.DataFrame(load_works())
 
 print("Extracting UPOS tags.")
-upos_docs = data["doc"].map(lambda d: " ".join(tok.pos_ for tok in d))
+upos_docs = data["doc"].map(
+    lambda d: " ".join(tok.pos_ for tok in d if tok.pos_ != "PUNCT")
+)
 
 print("Counting UPOS frequencies.")
 vectorizer = CountVectorizer()
