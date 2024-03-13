@@ -28,16 +28,16 @@ def load_works() -> list[dict]:
 
 def top_freq_group(
     labels, doc_term_matrix, vocab, top_k=10
-) -> dict[str, tuple[str, float]]:
+) -> dict[str, tuple[str, int, float]]:
     unique_labels = np.unique(labels)
     res = {}
     for label in unique_labels:
         freq = np.squeeze(np.asarray(doc_term_matrix[labels == label].sum(axis=0)))
-        freq = freq / freq.sum()
+        rel_freq = freq / freq.sum()
         high = np.argpartition(-freq, top_k)[:top_k]
         importance = freq[high]
         high = high[np.argsort(-importance)]
-        res[label] = list(zip(vocab[high], freq[high]))
+        res[label] = list(zip(vocab[high], freq[high], rel_freq[high]))
     return res
 
 
