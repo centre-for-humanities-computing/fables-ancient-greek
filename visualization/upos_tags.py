@@ -33,11 +33,13 @@ print("Producing Patterns heatmap.")
 data = pd.read_csv("results/upos_patterns.csv", index_col=0)
 md = fetch_metadata(SHEET_URL)
 data.columns = [find_work(work_id, md) for work_id in data.columns]
-z = data.applymap(lambda elem: literal_eval(elem)[1])
+rel_freq = data.applymap(lambda elem: literal_eval(elem)[2])
+counts = data.applymap(lambda elem: literal_eval(elem)[1])
 data = data.applymap(lambda elem: literal_eval(elem)[0])
 data = data.applymap(wrap_text)
+data = data + "<br> [" + counts.applymap(str) + "]"
 trace = go.Heatmap(
-    z=z,
+    z=rel_freq,
     text=data,
     texttemplate="%{text}",
     textfont=dict(size=14),
@@ -60,8 +62,27 @@ fig.write_html(out_path)
 print("Producing UPOS frequency visualizations.")
 data = pd.read_csv("results/upos_tags.csv", index_col=0)
 data["work_name"] = data["work_id"].map(partial(find_work, md=md))
+data = data.set_index(["work_name", "fable_name"]).drop(columns=["work_id"])
+freq = data.to_numpy()
+rel_freq = pd.DataFrame(
+    (freq.T / freq.sum(axis=1)).T, columns=data.columns, index=data.index
+)
+# Meaning words
 fig = px.scatter_matrix(
-    data, dimensions=["noun", "adj", "verb"], hover_name="fable_name", color="work_name"
+    rel_freq.reset_index(),
+    dimensions=["noun", "adj", "verb"],
+    hover_name="fable_name",
+    color="work_name",
 )
 out_path = Path("docs/_static/upos_scatter_matrix.html")
+fig.write_html(out_path)
+
+# Function words
+fig = px.scatter_matrix(
+    rel_freq.reset_index(),
+    dimensions=set(rel_freq.columns) - set(["noun", "adj", "verb", "propn", "num"]),
+    hover_name="fable_name",
+    color="work_name",
+)
+out_path = Path("docs/_static/upos_scatter_matrix_function.html")
 fig.write_html(out_path)
