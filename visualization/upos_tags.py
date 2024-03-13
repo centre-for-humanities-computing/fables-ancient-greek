@@ -2,6 +2,7 @@ from ast import literal_eval
 from functools import partial
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -85,4 +86,30 @@ fig = px.scatter_matrix(
     color="work_name",
 )
 out_path = Path("docs/_static/upos_scatter_matrix_function.html")
+fig.write_html(out_path)
+
+print("Producing wave plot")
+unique_works = rel_freq.reset_index()["work_name"].unique()
+colors = px.colors.qualitative.Safe
+work_to_color = dict(zip(unique_works, colors))
+tag_order = rel_freq.columns[np.argsort(-rel_freq.sum(axis=0))]
+rel_freq = rel_freq[tag_order]
+rel_freq = rel_freq.sort_index(level="work_name")
+fig = go.Figure()
+legendgroups = set()
+for (work_name, fable_name), data in rel_freq.iterrows():
+    fig.add_trace(
+        go.Scatter(
+            name=work_name if work_name not in legendgroups else "",
+            legendgroup=work_name,
+            marker=dict(color=work_to_color[work_name]),
+            x=tag_order,
+            y=data,
+            mode="lines",
+            opacity=0.8,
+            showlegend=work_name not in legendgroups,
+        )
+    )
+    legendgroups |= set([work_name])
+out_path = Path("docs/_static/upos_wave_plot.html")
 fig.write_html(out_path)
