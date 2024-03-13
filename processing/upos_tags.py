@@ -54,13 +54,12 @@ print("Counting UPOS frequencies.")
 vectorizer = CountVectorizer()
 upos_vecs = np.asarray(vectorizer.fit_transform(upos_docs).todense())
 upos_vocab = vectorizer.get_feature_names_out()
-rel_freqs = (upos_vecs.T / upos_vecs.sum(axis=1)).T
 
 print("Saving UPOS frequencies")
-rel_freq_df = pd.DataFrame(rel_freqs, columns=upos_vocab)
-rel_freq_df["fable_name"] = data["fable_name"]
-rel_freq_df["work_id"] = data["work_id"]
-rel_freq_df.to_csv(out_path)
+freq_df = pd.DataFrame(upos_vecs, columns=upos_vocab)
+freq_df["fable_name"] = data["fable_name"]
+freq_df["work_id"] = data["work_id"]
+freq_df.to_csv(out_path)
 
 print("Collecting UPOS n-grams")
 n_gram_vectorizer = CountVectorizer(ngram_range=(2, 4))
