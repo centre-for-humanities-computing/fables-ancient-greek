@@ -71,7 +71,7 @@ rel_freq = pd.DataFrame(
 # Meaning words
 fig = px.scatter_matrix(
     rel_freq.reset_index(),
-    dimensions=["noun", "adj", "verb"],
+    dimensions=["noun", "adj", "verb", "aux"],
     hover_name="fable_name",
     color="work_name",
 )
@@ -81,7 +81,8 @@ fig.write_html(out_path)
 # Function words
 fig = px.scatter_matrix(
     rel_freq.reset_index(),
-    dimensions=set(rel_freq.columns) - set(["noun", "adj", "verb", "propn", "num"]),
+    dimensions=["adp", "adv", "cconj", "det", "part", "sconj"],
+    # dimensions=set(rel_freq.columns) - set(["noun", "adj", "verb", "propn", "num", "aux"]),
     hover_name="fable_name",
     color="work_name",
 )
