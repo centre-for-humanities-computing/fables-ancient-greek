@@ -75,6 +75,32 @@ def lengths(doc: Doc) -> dict[str, Union[int, float]]:
     )
 
 
+def n_question_marks(doc: Doc) -> int:
+    return len([tok for tok in doc if tok.orth_ == ";"])
+
+
+def genre_marker(doc: Doc) -> bool:
+    """Looks at whether the following words
+    occur in the first three sentences: μῦθος, αἶνος, λόγος, παραβολή
+    """
+    for sent in doc.sents[:3]:
+        for tok in sent:
+            if tok.lemma_ in {"μῦθος", "αἶνος", "λόγος", "παραβολή"}:
+                return True
+    return False
+
+
+def man_occurs(doc: Doc) -> bool:
+    """Looks at whether the following words
+    occur in the first three sentences: τίς, ἀνήρ, ἄνθρωπος
+    """
+    for sent in doc.sents[:3]:
+        for tok in sent:
+            if tok.lemma_ in {"τίς", "ἀνήρ", "ἄνθρωπος"}:
+                return True
+    return False
+
+
 out_path = Path("results/stylistic_features.csv")
 out_path.parent.mkdir(exist_ok=True)
 
@@ -83,7 +109,13 @@ data = pd.DataFrame(load_works())
 
 records = []
 for doc in tqdm(data["doc"], desc="Processing documents."):
-    record = {**vocabulary_richness(doc), **lengths(doc)}
+    record = {
+        "n_question_marks": n_question_marks(doc),
+        "man_occurs": man_occurs(doc),
+        "genre_occurs": genre_marker(doc),
+        **vocabulary_richness(doc),
+        **lengths(doc),
+    }
     records.append(record)
 data = pd.concat([data, pd.DataFrame.from_records(records)], axis=1)
 
