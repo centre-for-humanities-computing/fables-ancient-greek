@@ -71,6 +71,7 @@ def lengths(doc: Doc) -> dict[str, Union[int, float]]:
         length=len(doc),
         mean_sentence_length=np.mean(sentence_lengths),  # type: ignore
         mean_token_length=np.mean(token_lenghts),
+        n_sentences=len(doc.sents),
     )
 
 

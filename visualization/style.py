@@ -56,7 +56,7 @@ fig.write_html(out_path)
 
 fig = px.scatter_matrix(
     data,
-    dimensions=["length", "mean_sentence_length", "mean_token_length"],
+    dimensions=["length", "mean_sentence_length", "mean_token_length", "n_sentences"],
     hover_name="fable_name",
     color="work",
 )
