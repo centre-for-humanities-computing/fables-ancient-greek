@@ -41,6 +41,16 @@ def top_freq_group(
     return res
 
 
+def extract_upos(doc: Doc) -> str:
+    tags = []
+    for tok in doc:
+        if (tok.pos_ == "PUNCT") and (tok.orth_ in [".", ";"]):
+            tags.append("PUNCT")
+        else:
+            tags.append(tok.pos_)
+    return " ".join(tags)
+
+
 out_path = Path("results/upos_tags.csv")
 out_path.parent.mkdir(exist_ok=True)
 
@@ -49,7 +59,7 @@ data = pd.DataFrame(load_works())
 
 print("Extracting UPOS tags.")
 upos_docs = data["doc"].map(
-    lambda d: " ".join(tok.pos_ for tok in d if tok.pos_ != "PUNCT")
+    extract_upos,
 )
 
 print("Counting UPOS frequencies.")
