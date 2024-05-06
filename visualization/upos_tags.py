@@ -75,6 +75,11 @@ fig = px.scatter_matrix(
     hover_name="fable_name",
     color="work_name",
 )
+fig.update_layout(legend=dict(
+    y=-0.3,
+    xanchor="left",
+    x=0
+))
 out_path = Path("docs/_static/upos_scatter_matrix.html")
 fig.write_html(out_path)
 
@@ -86,6 +91,11 @@ fig = px.scatter_matrix(
     hover_name="fable_name",
     color="work_name",
 )
+fig.update_layout(legend=dict(
+    y=-0.3,
+    xanchor="left",
+    x=0
+))
 out_path = Path("docs/_static/upos_scatter_matrix_function.html")
 fig.write_html(out_path)
 
@@ -112,5 +122,22 @@ for (work_name, fable_name), data in rel_freq.iterrows():
         )
     )
     legendgroups |= set([work_name])
+fig.add_trace(
+    go.Scatter(
+        name="Average across all works",
+        marker=dict(color="black"),
+        line=dict(width=5),
+        x=tag_order,
+        y=np.mean(rel_freq, axis = 0),
+        mode="lines",
+        opacity=1,
+    )
+)
+
+fig.update_layout(legend=dict(
+    y=-0.4,
+    xanchor="left",
+    x=0
+))
 out_path = Path("docs/_static/upos_wave_plot.html")
 fig.write_html(out_path)

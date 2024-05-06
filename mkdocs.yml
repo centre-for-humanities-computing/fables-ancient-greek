@@ -21,3 +21,6 @@ theme:
       - navigation.indexes
       - toc.follow
       - content.code.copy
+
+extra_css:
+  - stylesheets/extra.css
