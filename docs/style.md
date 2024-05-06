@@ -37,6 +37,13 @@ The most frequent 2 to 4-grams of UPOS tags were also counted for each work.
 <figcaption>Most Frequent N-grams of UPOS tags</figcaption>
 </figure>
 
+The most frequent 4-grams of UPOS tags were also counted for each work.
+
+<figure>
+<iframe src="../_static/upos_patterns_4.html" width="2450px" height="1400px"></iframe>
+<figcaption>Most Frequent N-grams of UPOS tags</figcaption>
+</figure>
+
 ## Lengths
 
 The length of fables (number of tokens), average length of tokens and mean sentence length were calculated for each work.

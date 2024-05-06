@@ -30,7 +30,7 @@ def wrap_text(text: str) -> str:
     return "<b>" + text
 
 
-print("Producing Patterns heatmap.")
+print("Producing Patterns heatmap (2-4).")
 data = pd.read_csv("results/upos_patterns.csv", index_col=0)
 md = fetch_metadata(SHEET_URL)
 data.columns = [find_work(work_id, md) for work_id in data.columns]
@@ -57,6 +57,36 @@ fig = fig.update_layout(
 )
 fig = fig.update_yaxes(autorange="reversed")
 out_path = Path("docs/_static/upos_patterns.html")
+out_path.parent.mkdir(exist_ok=True, parents=True)
+fig.write_html(out_path)
+
+print("Producing Patterns heatmap (4).")
+data = pd.read_csv("results/upos_patterns_4.csv", index_col=0)
+md = fetch_metadata(SHEET_URL)
+data.columns = [find_work(work_id, md) for work_id in data.columns]
+rel_freq = data.applymap(lambda elem: literal_eval(elem)[2])
+counts = data.applymap(lambda elem: literal_eval(elem)[1])
+data = data.applymap(lambda elem: literal_eval(elem)[0])
+data = data.applymap(wrap_text)
+data = data + "<br> [" + counts.applymap(str) + "]"
+trace = go.Heatmap(
+    z=rel_freq,
+    text=data,
+    texttemplate="%{text}",
+    textfont=dict(size=14),
+    x=data.columns,
+    y=data.index,
+    colorbar=dict(title="Relative Frequency"),
+)
+fig = go.Figure(
+    data=trace,
+)
+fig = fig.update_layout(
+    width=1000,
+    height=1400,
+)
+fig = fig.update_yaxes(autorange="reversed")
+out_path = Path("docs/_static/upos_patterns_4.html")
 out_path.parent.mkdir(exist_ok=True, parents=True)
 fig.write_html(out_path)
 
