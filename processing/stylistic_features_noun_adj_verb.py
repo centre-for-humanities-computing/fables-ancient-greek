@@ -24,7 +24,13 @@ def load_works() -> list[dict]:
         for file in files:
             fable_name = file.stem
             doc = Doc(nlp.vocab).from_disk(file)
-            records.append(dict(work_id=work_id, fable_name=fable_name, doc=doc))
+            # Filter tokens based on pos_
+            filtered_tokens = [token.text for token in doc if token.pos_ in ["NOUN", "ADJ", "VERB"]]
+            # Join the filtered tokens into a string
+            filtered_text = ' '.join(filtered_tokens)
+            # Create a new SpaCy Doc object from the filtered text
+            filtered_doc = nlp(filtered_text)
+            records.append(dict(work_id=work_id, fable_name=fable_name, doc=filtered_doc))
     return records
 
 
@@ -71,7 +77,7 @@ def lengths(doc: Doc) -> dict[str, Union[int, float]]:
         length=len(doc),
         mean_sentence_length=np.mean(sentence_lengths),  # type: ignore
         mean_token_length=np.mean(token_lenghts),
-        n_sentences=len([i for i in doc.sents]),
+        n_sentences=len(list(doc.sents)),
     )
 
 
@@ -83,7 +89,7 @@ def genre_marker(doc: Doc) -> bool:
     """Looks at whether the following words
     occur in the first three sentences: μῦθος, αἶνος, λόγος, παραβολή
     """
-    for sent in [i for i in doc.sents][:3]:
+    for sent in list(doc.sents)[:3]:
         for tok in sent:
             if tok.lemma_ in {"μῦθος", "αἶνος", "λόγος", "παραβολή"}:
                 return True
@@ -94,14 +100,14 @@ def man_occurs(doc: Doc) -> bool:
     """Looks at whether the following words
     occur in the first three sentences: τίς, ἀνήρ, ἄνθρωπος
     """
-    for sent in [i for i in doc.sents][:3]:
+    for sent in list(doc.sents)[:3]:
         for tok in sent:
             if tok.lemma_ in {"τίς", "ἀνήρ", "ἄνθρωπος"}:
                 return True
     return False
 
 
-out_path = Path("results/stylistic_features.csv")
+out_path = Path("results/stylistic_features_noun_adj_verb.csv")
 out_path.parent.mkdir(exist_ok=True)
 
 print("Calculating vocabulary richness.")
@@ -110,11 +116,11 @@ data = pd.DataFrame(load_works())
 records = []
 for doc in tqdm(data["doc"], desc="Processing documents."):
     record = {
-        "n_question_marks": n_question_marks(doc),
-        "man_occurs": man_occurs(doc),
-        "genre_occurs": genre_marker(doc),
+        #"n_question_marks": n_question_marks(doc),
+        #"man_occurs": man_occurs(doc),
+        #"genre_occurs": genre_marker(doc),
         **vocabulary_richness(doc),
-        **lengths(doc),
+        #**lengths(doc),
     }
     records.append(record)
 data = pd.concat([data, pd.DataFrame.from_records(records)], axis=1)

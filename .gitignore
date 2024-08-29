@@ -162,3 +162,6 @@ cython_debug/
 # ignoring all DS_Store files in the repository
 **/.DS_Store
 .DS_Store
+
+annotations/
+data/

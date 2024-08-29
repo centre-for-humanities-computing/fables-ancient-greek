@@ -20,6 +20,11 @@ UPOS tags were tallied up in all fables without removal of any stop words or lem
 <figcaption>Relative Frequencies of Nouns, Verbs and Adjectives in all Fables</figcaption>
 </figure>
 
+<!-- <figure>
+<iframe src="../_static/upos_scatter_matrix_3d.html" width="2450px" height="1050px"></iframe>
+<figcaption>Relative Frequencies of Nouns, Verbs and Adjectives in all Fables</figcaption>
+</figure> -->
+
 <figure>
 <iframe src="../_static/upos_scatter_matrix_function.html" width="2450px" height="1050px"></iframe>
 <figcaption>Relative Frequencies of Function Word Categories</figcaption>
@@ -51,4 +56,13 @@ The length of fables (number of tokens), average length of tokens and mean sente
 <figure>
 <iframe src="../_static/length_scatter_matrix.html" width="2450px" height="1050px"></iframe>
 <figcaption>Lengths in all Fables per Work</figcaption>
+</figure>
+
+## Vocabulary Richness (Noun, Adj, Verb)
+
+The vocabulary richness of each fable was calculated on the lemmatized work both with vanilla type-token ratio, but also with moving windows of size 10 and 50.
+
+<figure>
+<iframe src="../_static/vocabulary_richness_noun_adj_verb.html" width="2450px" height="1050px"></iframe>
+<figcaption>Use of Terms on a Group and Individual Level</figcaption>
 </figure>

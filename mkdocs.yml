@@ -4,6 +4,7 @@ nav:
     - Home: index.md
     - Word Use and Phrases: word_use.md
     - Stylistic Features: style.md
+    - More Info: more_info.md
 
 
 theme:
@@ -24,3 +25,10 @@ theme:
 
 extra_css:
   - stylesheets/extra.css
+
+markdown_extensions:
+  - tables
+
+plugins:
+  - search
+  - table-reader
