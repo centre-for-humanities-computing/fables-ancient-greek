@@ -370,9 +370,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#vocabulary-richness" class="md-nav__link">
+  <a href="#vocabulary-richness-all-words" class="md-nav__link">
     <span class="md-ellipsis">
-      Vocabulary Richness
+      Vocabulary Richness (All Words)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vocabulary-richness-noun-adj-verb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vocabulary Richness (Noun, Adj, Verb)
     </span>
   </a>
   
@@ -397,11 +406,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#vocabulary-richness-noun-adj-verb" class="md-nav__link">
+  <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
-      Vocabulary Richness (Noun, Adj, Verb)
+      καὶ
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="καὶ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#number-of-tokens-vs-occurrences-of" class="md-nav__link">
+    <span class="md-ellipsis">
+      Number of tokens vs. occurrences of καὶ
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#richness" class="md-nav__link">
+    <span class="md-ellipsis">
+      καὶ Richness
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#punct-vs-punct" class="md-nav__link">
+    <span class="md-ellipsis">
+      punct vs. punct + καὶ
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -459,10 +501,17 @@
 
 <h1 id="style">Style</h1>
 <p>The corpus can be investigated from a number of stylistical perspectives.</p>
-<h2 id="vocabulary-richness">Vocabulary Richness</h2>
+<h2 id="vocabulary-richness-all-words">Vocabulary Richness (All Words)</h2>
 <p>The vocabulary richness of each fable was calculated on the lemmatized work both with vanilla type-token ratio, but also with moving windows of size 10 and 50.</p>
 <figure>
 <iframe src="../_static/vocabulary_richness.html" width="2450px" height="1050px"></iframe>
+<figcaption>Use of Terms on a Group and Individual Level</figcaption>
+</figure>
+
+<h2 id="vocabulary-richness-noun-adj-verb">Vocabulary Richness (Noun, Adj, Verb)</h2>
+<p>The vocabulary richness of each fable was calculated on the lemmatized work both with vanilla type-token ratio, but also with moving windows of size 10 and 50.</p>
+<figure>
+<iframe src="../_static/vocabulary_richness_noun_adj_verb.html" width="2450px" height="1050px"></iframe>
 <figcaption>Use of Terms on a Group and Individual Level</figcaption>
 </figure>
 
@@ -517,17 +566,37 @@
 </figure>
 
 <h2 id="lengths">Lengths</h2>
-<p>The length of fables (number of tokens), average length of tokens and mean sentence length were calculated for each work.</p>
+<p>The length of fables (number of tokens), average length of tokens, mean sentence length, and mean length between occurrence of καὶ were calculated for each work.</p>
 <figure>
 <iframe src="../_static/length_scatter_matrix.html" width="2450px" height="1050px"></iframe>
 <figcaption>Lengths in all Fables per Work</figcaption>
 </figure>
 
-<h2 id="vocabulary-richness-noun-adj-verb">Vocabulary Richness (Noun, Adj, Verb)</h2>
-<p>The vocabulary richness of each fable was calculated on the lemmatized work both with vanilla type-token ratio, but also with moving windows of size 10 and 50.</p>
+<p>3d plot for exploration.</p>
 <figure>
-<iframe src="../_static/vocabulary_richness_noun_adj_verb.html" width="2450px" height="1050px"></iframe>
-<figcaption>Use of Terms on a Group and Individual Level</figcaption>
+<iframe src="../_static/length_scatter_matrix_3d.html" width="2450px" height="1050px"></iframe>
+<figcaption>Lengths in all Fables per Work</figcaption>
+</figure>
+
+<h2 id="_1">καὶ</h2>
+<h3 id="number-of-tokens-vs-occurrences-of">Number of tokens vs. occurrences of καὶ</h3>
+<p>The length of fables (number of tokens) and number of occurrences of καὶ were calculated for each work.</p>
+<figure>
+<iframe src="../_static/length_kai_matrix.html" width="2450px" height="1050px"></iframe>
+<figcaption>Lengths in all Fables per Work</figcaption>
+</figure>
+
+<h3 id="richness">καὶ Richness</h3>
+<p>Calculated on the lemmatized work both with vanilla καὶ-token ratio, but also with moving windows of size 10 and 50.</p>
+<figure>
+<iframe src="../_static/kai_richness.html" width="2450px" height="1050px"></iframe>
+<figcaption>Use of καὶ on a Group and Individual Level</figcaption>
+</figure>
+
+<h3 id="punct-vs-punct">punct vs. punct + καὶ</h3>
+<figure>
+<iframe src="../_static/kai_punct_scatter.html" width="2450px" height="1050px"></iframe>
+<figcaption>Scatterplot of occurrences of punct vs. punct followed by καὶ </figcaption>
 </figure>
 
 
