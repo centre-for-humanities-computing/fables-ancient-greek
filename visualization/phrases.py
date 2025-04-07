@@ -30,9 +30,9 @@ def wrap_text(text: str) -> str:
 data = pd.read_csv("results/phrases.csv", index_col=0)
 md = fetch_metadata(SHEET_URL)
 data.columns = [find_work(work_id, md) for work_id in data.columns]
-z = data.applymap(lambda elem: literal_eval(elem)[1])
-data = data.applymap(lambda elem: literal_eval(elem)[0])
-data = data.applymap(wrap_text)
+z = data.map(lambda elem: literal_eval(elem)[1])
+data = data.map(lambda elem: literal_eval(elem)[0])
+data = data.map(wrap_text)
 
 trace = go.Heatmap(
     z=z,
