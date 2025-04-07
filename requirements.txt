@@ -1,10 +1,11 @@
 mkdocs
 mkdocs-table-reader-plugin
+mkdocs-material
 numpy
 plotly
 pandas
 spacy
 scikit-learn
-tqdmpip 
+tqdm
 umap-learn
 https://huggingface.co/chcaa/grc_odycy_joint_trf/resolve/main/grc_odycy_joint_trf-0.7.0-py3-none-any.whl
