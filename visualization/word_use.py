@@ -40,7 +40,7 @@ fig = px.scatter(
     x="x_umap",
     y="y_umap",
     color="group",
-    text="fable",
+    # text="fable",
     hover_data={
         "top_tf-idf": True,
         "top_frequency": True,
