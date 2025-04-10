@@ -20,10 +20,10 @@ UPOS tags were tallied up in all fables without removal of any stop words or lem
 <figcaption>Relative Frequencies of Nouns, Verbs and Adjectives in all Fables</figcaption>
 </figure>
 
-<!-- <figure>
+<figure>
 <iframe src="../_static/upos_scatter_matrix_3d.html" width="2450px" height="1050px"></iframe>
 <figcaption>Relative Frequencies of Nouns, Verbs and Adjectives in all Fables</figcaption>
-</figure> -->
+</figure>
 
 <figure>
 <iframe src="../_static/upos_scatter_matrix_function.html" width="2450px" height="1050px"></iframe>
