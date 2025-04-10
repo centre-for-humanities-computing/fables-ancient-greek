@@ -51,12 +51,20 @@ The most frequent 4-grams of UPOS tags were also counted for each work.
 
 ## Lengths
 
-The length of fables (number of tokens), average length of tokens and mean sentence length were calculated for each work.
+The length of fables (number of tokens), average length of tokens and mean sentence length were calculated for each work. Texts were split on punctuation to create the sentences. 
+Punctuation was defined as full stops (.) and Greek question marks (;). Commas and elevated dots were not counted as punctuation. 
+Metrical feet, metre, and stanzas were not taken into account.  
 
 <figure>
 <iframe src="../_static/length_scatter_matrix.html" width="2450px" height="1050px"></iframe>
-<figcaption>Lengths in all Fables per Work</figcaption>
+<figcaption>Lengths in all Fables per Group</figcaption>
 </figure>
+
+<figure>
+<iframe src="../_static/lengths_3d.html" width="2450px" height="1050px"></iframe>
+<figcaption>Total number of words (length), number of unique words (n_types), and number of unique lemmata (n_lemmata) in all Fables per Group</figcaption>
+</figure>
+
 
 ## Vocabulary Richness (Noun, Adj, Verb)
 
