@@ -26,10 +26,12 @@ def wrap_text(text: str) -> str:
         text = "<br>".join(text.split())
     return "<b>" + text
 
+dat_path = Path("/work/gospel-ancient-greek/fables-ancient-greek/data/results")
 
-data = pd.read_csv("results/phrases.csv", index_col=0)
+data = pd.read_csv(dat_path.joinpath("phrases.csv"), index_col=0)
+
 md = fetch_metadata(SHEET_URL)
-data.columns = [find_work(work_id, md) for work_id in data.columns]
+# data.columns = [find_work(work_id, md) for work_id in data.columns]
 z = data.map(lambda elem: literal_eval(elem)[1])
 data = data.map(lambda elem: literal_eval(elem)[0])
 data = data.map(wrap_text)

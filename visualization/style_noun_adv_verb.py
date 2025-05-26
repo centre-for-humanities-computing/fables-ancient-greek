@@ -22,10 +22,12 @@ def find_work(work_id: str, md: pd.DataFrame) -> str:
     return md["work"].iloc[0]
 
 
-data = pd.read_csv("results/stylistic_features_noun_adj_verb.csv")
-md = fetch_metadata(SHEET_URL)
-data["fable"] = data["fable_name"].map(lambda s: s.split(" - ")[1])
-data["work"] = data["work_id"].map(lambda id: find_work(id, md))
+dat_path = Path("/work/gospel-ancient-greek/fables-ancient-greek/data")
+
+data = pd.read_csv(dat_path.joinpath("results/stylistic_features_noun_adj_verb.csv"))
+# md = fetch_metadata(SHEET_URL)
+# data["fable"] = data["fable_name"].map(lambda s: s.split(" - ")[1])
+# data["work"] = data["work_id"].map(lambda id: find_work(id, md))
 
 out_path = Path("docs/_static/vocabulary_richness_noun_adj_verb.html")
 out_path.parent.mkdir(exist_ok=True, parents=True)
@@ -45,7 +47,7 @@ for i_feature, feature in enumerate(["ttr", "mattr_10", "mattr_50"]):
             legendgroup=work,
             showlegend=row == 1,
             boxpoints="all",
-            text=subset["fable"],
+            text=subset["fable_name"],
             hovertemplate="<b>%{text}",
             marker=dict(color=color),
         )

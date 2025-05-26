@@ -19,11 +19,12 @@ def find_work(work_id: str, md: pd.DataFrame) -> str:
     md = md[md["document_id"].str.contains(work_id)]
     return md["work"].iloc[0]
 
+dat_path = Path("/work/gospel-ancient-greek/fables-ancient-greek/data/results")
 
-data = pd.read_csv("results/word_use.csv")
-md = fetch_metadata(SHEET_URL)
-data["fable"] = data["fable_name"].map(lambda s: s.split(" - ")[1])
-data["work"] = data["work_id"].map(lambda id: find_work(id, md))
+data = pd.read_csv(dat_path.joinpath("word_use.csv"))
+
+# md = fetch_metadata(SHEET_URL)
+# data["work"] = data["work_id"].map(lambda id: find_work(id, md))
 data["group"] = (
     "<b>"
     + data["work"]
@@ -49,7 +50,7 @@ fig = px.scatter(
         "x_umap": False,
         "y_umap": False,
         "group": False,
-        "fable": False,
+        "fable_name": False,
     },
     hover_name="fable_name",
     template="plotly_white",

@@ -11,28 +11,15 @@ from tqdm import tqdm
 
 nlp = spacy.load("grc_odycy_joint_trf")
 
-
-def load_works() -> list[dict]:
-    works = glob.glob("data/spacy_objects/*")
-    works = map(Path, works)
-    works = [work for work in works if work.is_dir()]
+def load_files(dat_path) -> list[dict]:
+    files = list(dat_path.rglob("*.spacy"))
     records = []
-    for work in works:
-        work_id = work.stem
-        files = glob.glob(str(work.joinpath("*.spacy")))
-        files = map(Path, files)
-        for file in files:
-            fable_name = file.stem
-            doc = Doc(nlp.vocab).from_disk(file)
-            # Filter tokens based on pos_
-            filtered_tokens = [token.text for token in doc if token.pos_ in ["NOUN", "ADJ", "VERB"]]
-            # Join the filtered tokens into a string
-            filtered_text = ' '.join(filtered_tokens)
-            # Create a new SpaCy Doc object from the filtered text
-            filtered_doc = nlp(filtered_text)
-            records.append(dict(work_id=work_id, fable_name=fable_name, doc=filtered_doc))
+    for file in tqdm(files):
+        fable_name = file.stem
+        doc = Doc(nlp.vocab).from_disk(file)
+        work = str(file.parent).split("/")[-1]
+        records.append(dict(fable_name=fable_name, doc=doc, work = work))
     return records
-
 
 def moving_ttr(tokens: list[str], window_size: int = 50) -> list[float]:
     """Calculates moving type-token-ratios for each window in a text."""
@@ -106,21 +93,22 @@ def man_occurs(doc: Doc) -> bool:
                 return True
     return False
 
+dat_path = Path("/work/gospel-ancient-greek/fables-ancient-greek/data")
+out_path = dat_path.joinpath("results/stylistic_features_noun_adj_verb.csv")
 
-out_path = Path("results/stylistic_features_noun_adj_verb.csv")
 out_path.parent.mkdir(exist_ok=True)
 
 print("Calculating vocabulary richness.")
-data = pd.DataFrame(load_works())
+data = pd.DataFrame(load_files(dat_path))
 
 records = []
 for doc in tqdm(data["doc"], desc="Processing documents."):
     record = {
-        #"n_question_marks": n_question_marks(doc),
-        #"man_occurs": man_occurs(doc),
-        #"genre_occurs": genre_marker(doc),
+        "n_question_marks": n_question_marks(doc),
+        "man_occurs": man_occurs(doc),
+        "genre_occurs": genre_marker(doc),
         **vocabulary_richness(doc),
-        #**lengths(doc),
+        **lengths(doc),
     }
     records.append(record)
 data = pd.concat([data, pd.DataFrame.from_records(records)], axis=1)

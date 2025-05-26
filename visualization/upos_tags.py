@@ -31,9 +31,12 @@ def wrap_text(text: str) -> str:
 
 
 print("Producing Patterns heatmap (2-4).")
-data = pd.read_csv("results/upos_patterns.csv", index_col=0)
+dat_path = Path("/work/gospel-ancient-greek/fables-ancient-greek/data/results")
+
+data = pd.read_csv(dat_path.joinpath("upos_patterns.csv"), index_col=0)
+
 md = fetch_metadata(SHEET_URL)
-data.columns = [find_work(work_id, md) for work_id in data.columns]
+# data.columns = [find_work(work_id, md) for work_id in data.columns]
 rel_freq = data.map(lambda elem: literal_eval(elem)[2])
 counts = data.map(lambda elem: literal_eval(elem)[1])
 data = data.map(lambda elem: literal_eval(elem)[0])
@@ -61,9 +64,9 @@ out_path.parent.mkdir(exist_ok=True, parents=True)
 fig.write_html(out_path)
 
 print("Producing Patterns heatmap (4).")
-data = pd.read_csv("results/upos_patterns_4.csv", index_col=0)
+data = pd.read_csv(dat_path.joinpath("upos_patterns_4.csv"), index_col=0)
 md = fetch_metadata(SHEET_URL)
-data.columns = [find_work(work_id, md) for work_id in data.columns]
+# data.columns = [find_work(work_id, md) for work_id in data.columns]
 rel_freq = data.map(lambda elem: literal_eval(elem)[2])
 counts = data.map(lambda elem: literal_eval(elem)[1])
 data = data.map(lambda elem: literal_eval(elem)[0])
@@ -91,19 +94,20 @@ out_path.parent.mkdir(exist_ok=True, parents=True)
 fig.write_html(out_path)
 
 print("Producing UPOS frequency visualizations.")
-data = pd.read_csv("results/upos_tags.csv", index_col=0)
-data["work_name"] = data["work_id"].map(partial(find_work, md=md))
-data = data.set_index(["work_name", "fable_name"]).drop(columns=["work_id"])
+data = pd.read_csv(dat_path.joinpath("upos_tags.csv"), index_col=0)
+# data["work_name"] = data["work_id"].map(partial(find_work, md=md))
+data = data.set_index(["work", "fable_name"])
 freq = data.to_numpy()
 rel_freq = pd.DataFrame(
     (freq.T / freq.sum(axis=1)).T, columns=data.columns, index=data.index
 )
+print(rel_freq)
 # Meaning words
 fig = px.scatter_matrix(
     rel_freq.reset_index(),
     dimensions=["noun", "adj", "verb", "aux"],
     hover_name="fable_name",
-    color="work_name",
+    color="work",
 )
 fig.update_layout(legend=dict(
     y=-0.3,
@@ -119,7 +123,7 @@ fig = px.scatter_matrix(
     dimensions=["adp", "adv", "cconj", "det", "part", "sconj"],
     # dimensions=set(rel_freq.columns) - set(["noun", "adj", "verb", "propn", "num", "aux"]),
     hover_name="fable_name",
-    color="work_name",
+    color="work",
 )
 fig.update_layout(legend=dict(
     y=-0.3,
@@ -130,28 +134,29 @@ out_path = Path("docs/_static/upos_scatter_matrix_function.html")
 fig.write_html(out_path)
 
 print("Producing wave plot")
-unique_works = rel_freq.reset_index()["work_name"].unique()
+unique_works = rel_freq.reset_index()["work"].unique()
 colors = px.colors.qualitative.Safe
 work_to_color = dict(zip(unique_works, colors))
+print(work_to_color)
 tag_order = rel_freq.columns[np.argsort(-rel_freq.sum(axis=0))]
 rel_freq = rel_freq[tag_order]
-rel_freq = rel_freq.sort_index(level="work_name")
+rel_freq = rel_freq.sort_index(level="work")
 fig = go.Figure()
 legendgroups = set()
-for (work_name, fable_name), data in rel_freq.iterrows():
+for (work, fable_name), data in rel_freq.iterrows():
     fig.add_trace(
         go.Scatter(
-            name=work_name if work_name not in legendgroups else "",
-            legendgroup=work_name,
-            marker=dict(color=work_to_color[work_name]),
+            name=work if work not in legendgroups else "",
+            legendgroup=work,
+            marker=dict(color=work_to_color[work]),
             x=tag_order,
             y=data,
             mode="lines",
             opacity=0.8,
-            showlegend=work_name not in legendgroups,
+            showlegend=work not in legendgroups,
         )
     )
-    legendgroups |= set([work_name])
+    legendgroups |= set([work])
 fig.add_trace(
     go.Scatter(
         name="Average across all works",

@@ -8,26 +8,20 @@ from tqdm import tqdm
 nlp = spacy.load("grc_odycy_joint_trf")
 
 
-def iterate_fables(file_path: Path) -> Iterable[tuple[str, str]]:
-    with open(file_path) as in_file:
-        contents = in_file.read()
-        fables = contents.split("\n\n\n\n")
-        for fable in fables:
-            fable_name, fable_text = fable.split("\n\n\n")
-            yield fable_name, fable_text
+dat_path = Path("/work/gospel-ancient-greek/fables-ancient-greek/data/")
+out_path = dat_path.joinpath("spacy_objects/")
 
+files = list(dat_path.rglob("*.txt"))
 
-out_path = Path("data/spacy_objects")
-out_path.mkdir(exist_ok=True, parents=True)
-
-files = glob("data/raw/*.txt")
-files = [Path(file) for file in files]
 for file in tqdm(files, desc="Going through all fables."):
     file_id = file.stem
-    current_folder = out_path.joinpath(file_id)
-    current_folder.mkdir(exist_ok=True, parents=True)
-    for fable_name, fable_content in iterate_fables(file):
-        out_file_path = current_folder.joinpath(f"{fable_name}.spacy")
+    with open(file) as in_file:
+        work = str(file.parent).split("/")[-1]
+        content = in_file.read()
+
+        out_file_path = out_path.joinpath(work)
+        out_file_path.mkdir(exist_ok=True, parents=True)
+        
         if not out_file_path.is_file():
-            doc = nlp(fable_content)
-            doc.to_disk(out_file_path)
+            doc = nlp(content)
+            doc.to_disk(out_file_path.joinpath(f"{file_id}.spacy"))

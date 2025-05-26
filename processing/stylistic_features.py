@@ -12,20 +12,16 @@ from tqdm import tqdm
 nlp = spacy.load("grc_odycy_joint_trf")
 
 
-def load_works() -> list[dict]:
-    works = glob.glob("data/spacy_objects/*")
-    works = map(Path, works)
-    works = [work for work in works if work.is_dir()]
+def load_works(dat_path) -> list[dict]:
+    works = list(dat_path.rglob("*.spacy"))
     records = []
-    for work in works:
-        work_id = work.stem
-        files = glob.glob(str(work.joinpath("*.spacy")))
-        files = map(Path, files)
-        for file in files:
-            fable_name = file.stem
-            doc = Doc(nlp.vocab).from_disk(file)
-            records.append(dict(work_id=work_id, fable_name=fable_name, doc=doc))
+    for work in tqdm(works):
+        fable_name = work.stem
+        doc = Doc(nlp.vocab).from_disk(work)
+        work = str(work.parent).split("/")[-1]
+        records.append(dict(fable_name=fable_name, doc=doc, work = work))
     return records
+
 
 
 def moving_ttr(tokens: list[str], window_size: int = 50) -> list[float]:
@@ -60,8 +56,11 @@ def ttr(tokens: list[str]) -> float:
 def vocabulary_richness(doc: Doc) -> dict[str, float]:
     lemmata = [token.lemma_ for token in doc]
     return dict(
-        mattr_10=mattr(lemmata, 10), mattr_50=mattr(lemmata, 50), ttr=ttr(lemmata)
-    )
+        mattr_10=mattr(lemmata, 10), 
+        mattr_50=mattr(lemmata, 50), 
+        ttr=ttr(lemmata), 
+        n_types = len(set(doc)), 
+        n_lemmata = len(set(lemmata)))
 
 
 def lengths(doc: Doc) -> dict[str, Union[int, float]]:
@@ -100,12 +99,13 @@ def man_occurs(doc: Doc) -> bool:
                 return True
     return False
 
+dat_path = Path("/work/gospel-ancient-greek/fables-ancient-greek/data")
 
-out_path = Path("results/stylistic_features.csv")
-out_path.parent.mkdir(exist_ok=True)
+out_path = dat_path.joinpath("results/stylistic_features.csv")
+out_path.parent.mkdir(exist_ok=True, parents=True)
 
 print("Calculating vocabulary richness.")
-data = pd.DataFrame(load_works())
+data = pd.DataFrame(load_works(dat_path))
 
 records = []
 for doc in tqdm(data["doc"], desc="Processing documents."):
